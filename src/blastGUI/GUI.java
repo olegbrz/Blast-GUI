@@ -33,6 +33,7 @@ public class GUI extends JFrame {
     // Results panel (right)
     resultsArea = new JTextArea(10, 60);
     resultsArea.setEditable(false);
+    resultsArea.setLineWrap(true);
     JScrollPane resultsPanel = new JScrollPane(resultsArea);
 
     // Left side menu
@@ -59,6 +60,7 @@ public class GUI extends JFrame {
 
     group.add(proteinRadio);
     group.add(nucRadio);
+
     sideMenu.add(proteinRadio);
     sideMenu.add(nucRadio);
 
@@ -138,6 +140,13 @@ public class GUI extends JFrame {
   }
 
   public static void main(String[] args) {
+    try {
+      JFrame.setDefaultLookAndFeelDecorated(true);
+      JDialog.setDefaultLookAndFeelDecorated(true);
+      UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     EventQueue.invokeLater(
         () -> {
           @SuppressWarnings("unused")
