@@ -9,12 +9,12 @@ import java.io.File;
 import java.util.Hashtable;
 
 public class GUI extends JFrame {
-  private final JTextField queryField;
   private final JTextArea resultsArea;
   private final JRadioButton proteinRadio;
   private final JSlider similaritySlider;
   private final JLabel dbIndexFileLabel;
   private final JLabel dbFileLabel;
+  private final JComboBox<String> queryComboBox;
   private JTextField similarityText;
   private String databasePath, databaseIndexPath;
 
@@ -33,31 +33,34 @@ public class GUI extends JFrame {
     JPanel sideMenu = new JPanel();
     sideMenu.setLayout(new GridLayout(0, 1));
 
+    // Query sequence
     JLabel queryLabel = new JLabel("Query sequence");
     sideMenu.add(queryLabel);
 
-    queryField = new JTextField(20);
-    sideMenu.add(queryField);
+    queryComboBox = new JComboBox<>();
+    queryComboBox.setEditable(true);
+    sideMenu.add(queryComboBox);
 
+    // Query type
     JLabel queryTypeLabel = new JLabel("Query type");
     sideMenu.add(queryTypeLabel);
 
     ButtonGroup group = new ButtonGroup();
 
     proteinRadio = new JRadioButton("Protein");
-    group.add(proteinRadio);
-    sideMenu.add(proteinRadio);
     proteinRadio.setSelected(true);
-
     JRadioButton nucRadio = new JRadioButton("Nucleotide");
+
+    group.add(proteinRadio);
     group.add(nucRadio);
+    sideMenu.add(proteinRadio);
     sideMenu.add(nucRadio);
 
+    // Similarity
     JLabel similarityLabel = new JLabel("Similarity");
     sideMenu.add(similarityLabel);
 
     JPanel sliderPan = new JPanel();
-
     similaritySlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 100);
     similaritySlider.setMajorTickSpacing(50);
     similaritySlider.setMinorTickSpacing(10);
@@ -81,6 +84,7 @@ public class GUI extends JFrame {
 
     sideMenu.add(sliderPan);
 
+    // Files
     JLabel filesLabel = new JLabel("Database files");
     sideMenu.add(filesLabel);
 
@@ -111,10 +115,12 @@ public class GUI extends JFrame {
 
     JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
+    // Blast button
     JButton blast = new JButton("BLAST");
     bottomPanel.add(blast);
     blast.addActionListener(e -> runQuery());
 
+    // Clear button
     JButton clearButton = new JButton("Clear results");
     clearButton.addActionListener(e -> resultsArea.setText(""));
     bottomPanel.add(clearButton);
@@ -156,7 +162,9 @@ public class GUI extends JFrame {
   }
 
   public void runQuery() {
-    String query = queryField.getText();
+    Object queryItem = queryComboBox.getSelectedItem();
+    String query = "";
+    if (queryItem != null) query = queryItem.toString();
     char queryType = proteinRadio.isSelected() ? 'p' : 'q';
     float similarity = ((float) similaritySlider.getValue()) / 100;
 
@@ -184,6 +192,8 @@ public class GUI extends JFrame {
           bCnt.blastQuery(queryType, databasePath, databaseIndexPath, similarity, query);
       resultsArea.setText("");
       resultsArea.append(result);
+      queryComboBox.addItem(query);
+
     } catch (Exception exc) {
       System.out.println("Error en la llamada: " + exc.toString());
     }
