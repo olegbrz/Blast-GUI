@@ -9,13 +9,14 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class GUI extends JFrame {
-  private JButton openDbFile, openDbIndFile, blast;
-  private JTextField queryField, similarityField, similarityText;
-  private JTextArea resultsArea;
-  private JRadioButton nucRadio, protRadio;
-  private JSlider similaritySlider;
+  private final JTextField queryField;
+  private JTextField similarityText;
+  private final JTextArea resultsArea;
+  private final JRadioButton proteinRadio;
+  private final JSlider similaritySlider;
   private String databasePath, databaseIndexPath;
-  private JSplitPane splitPane;
+  private final JLabel dbIndexFileLabel;
+  private final JLabel dbFileLabel;
 
   public GUI() {
 
@@ -24,14 +25,13 @@ public class GUI extends JFrame {
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // Results panel (right)
-    resultsArea = new JTextArea(110, 60);
+    resultsArea = new JTextArea(10, 60);
     resultsArea.setEditable(false);
     JScrollPane resultsPanel = new JScrollPane(resultsArea);
-    resultsPanel.setPreferredSize(new Dimension(650, 600));
 
     // Left side menu
     JPanel sideMenu = new JPanel();
-    sideMenu.setLayout(new GridLayout(0,1));
+    sideMenu.setLayout(new GridLayout(0, 1));
 
     JLabel queryLabel = new JLabel("Query sequence");
     sideMenu.add(queryLabel);
@@ -44,12 +44,12 @@ public class GUI extends JFrame {
 
     ButtonGroup group = new ButtonGroup();
 
-    protRadio = new JRadioButton("Protein");
-    group.add(protRadio);
-    sideMenu.add(protRadio);
-    protRadio.setSelected(true);
+    proteinRadio = new JRadioButton("Protein");
+    group.add(proteinRadio);
+    sideMenu.add(proteinRadio);
+    proteinRadio.setSelected(true);
 
-    nucRadio = new JRadioButton("Nucleotide");
+    JRadioButton nucRadio = new JRadioButton("Nucleotide");
     group.add(nucRadio);
     sideMenu.add(nucRadio);
 
@@ -62,8 +62,8 @@ public class GUI extends JFrame {
     similaritySlider.setMajorTickSpacing(50);
     similaritySlider.setMinorTickSpacing(10);
 
-    Hashtable labelTable = new Hashtable<Integer, Double>();
-    labelTable.put(0,new JLabel("0"));
+    Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
+    labelTable.put(0, new JLabel("0"));
     labelTable.put(50, new JLabel("0.5"));
     labelTable.put(100, new JLabel("1"));
 
@@ -71,56 +71,56 @@ public class GUI extends JFrame {
     similaritySlider.setPaintTicks(true);
     similaritySlider.setPaintLabels(true);
     similaritySlider.addChangeListener(
-        e -> {
-          similarityText.setText("" + (float) similaritySlider.getValue() / 100);
-        });
+        e -> similarityText.setText("" + (float) similaritySlider.getValue() / 100));
     sliderPan.add(similaritySlider);
 
     similarityText = new JTextField(4);
     similarityText.addActionListener(
-        e -> {
-          similaritySlider.setValue((int) (Float.parseFloat(similarityText.getText()) * 100));
-        });
+        e -> similaritySlider.setValue((int) (Float.parseFloat(similarityText.getText()) * 100)));
     sliderPan.add(similarityText);
 
     sideMenu.add(sliderPan);
 
-    JPanel openButtons = new JPanel();
+    JLabel filesLabel = new JLabel("Database files");
+    sideMenu.add(filesLabel);
 
-    openDbFile = new JButton("Open a database file");
-    openButtons.add(openDbFile);
+    JButton openDbFile = new JButton("Open a database file");
+    sideMenu.add(openDbFile);
     openDbFile.addActionListener(
-        e -> {
-          selectDatabase();
-        });
+        e -> selectDatabase());
 
-    openDbIndFile = new JButton("Open a database indexes file");
-    openButtons.add(openDbIndFile);
+    dbFileLabel = new JLabel("No database selected.");
+    Font dbFileLabelFont = dbFileLabel.getFont();
+    dbFileLabel.setFont(dbFileLabelFont.deriveFont(dbFileLabelFont.getStyle() & ~Font.BOLD));
+    sideMenu.add(dbFileLabel);
+
+    JButton openDbIndFile = new JButton("Open a database indexes file");
+    sideMenu.add(openDbIndFile);
     openDbIndFile.addActionListener(
-        e -> {
-          selectDatabaseIndex();
-        });
+        e -> selectDatabaseIndex());
 
-    sideMenu.add(openButtons);
-
-    blast = new JButton("BLAST");
-    sideMenu.add(blast);
-    blast.addActionListener(
-        e -> {
-          runQuery();
-        });
-
+    dbIndexFileLabel = new JLabel("No database indexes selected.");
+    Font dbIndexFileLabelFont = dbIndexFileLabel.getFont();
+    dbIndexFileLabel.setFont(
+        dbIndexFileLabelFont.deriveFont(dbIndexFileLabelFont.getStyle() & ~Font.BOLD));
+    sideMenu.add(dbIndexFileLabel);
 
     // Window split pane
-    splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-            sideMenu, resultsPanel);
+    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sideMenu, resultsPanel);
     splitPane.setOneTouchExpandable(true);
     splitPane.setDividerLocation(280);
     this.add(splitPane, BorderLayout.CENTER);
 
-    JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+    JButton blast = new JButton("BLAST");
+    bottomPanel.add(blast);
+    blast.addActionListener(
+        e -> runQuery());
+
     JButton clearButton = new JButton("Clear results");
-    clearButton.addActionListener(e -> {resultsArea.setText("");});
+    clearButton.addActionListener(
+        e -> resultsArea.setText(""));
     bottomPanel.add(clearButton);
 
     this.add(bottomPanel, BorderLayout.SOUTH);
@@ -137,9 +137,7 @@ public class GUI extends JFrame {
     if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
       File f = chooser.getSelectedFile();
       databaseIndexPath = f.getAbsolutePath();
-      // read  and/or display the file somehow. ....
-    } else {
-      // user changed their mind
+      dbIndexFileLabel.setText(f.getAbsoluteFile().getName() + " selected");
     }
   }
 
@@ -149,18 +147,32 @@ public class GUI extends JFrame {
     if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
       File f = chooser.getSelectedFile();
       databasePath = f.getAbsolutePath();
-      // read  and/or display the file somehow. ....
-    } else {
-      // user changed their mind
+      dbFileLabel.setText(f.getAbsoluteFile().getName() + " selected");
     }
   }
 
   public void runQuery() {
     String query = queryField.getText();
-    char queryType = protRadio.isSelected() ? 'p' : 'q';
-    float similarity = ((float) similaritySlider.getValue()) /100;
+    char queryType = proteinRadio.isSelected() ? 'p' : 'q';
+    float similarity = ((float) similaritySlider.getValue()) / 100;
 
-    //System.out.println(query + " " + similarity + " " + queryType + " ");
+    String errorMessage = "";
+    if (query.length() == 0) {
+      errorMessage = errorMessage + "- The query sequence is empty.\n";
+    }
+    if (databasePath == null) {
+      errorMessage = errorMessage + "- No database file.\n";
+    }
+    if (databaseIndexPath == null) {
+      errorMessage = errorMessage + "- No database indexes file.\n";
+    }
+
+    if (errorMessage.length() != 0) {
+      JOptionPane.showMessageDialog(this, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
+    // System.out.println(query + " " + similarity + " " + queryType + " ");
 
     BlastController bCnt = new BlastController();
     try {
@@ -175,11 +187,9 @@ public class GUI extends JFrame {
 
   public static void main(String[] args) {
     EventQueue.invokeLater(
-        new Runnable() {
-          public void run() {
-            @SuppressWarnings("unused")
-            GUI newWindow = new GUI();
-          }
-        });
+            () -> {
+              @SuppressWarnings("unused")
+              GUI newWindow = new GUI();
+            });
   }
 }
