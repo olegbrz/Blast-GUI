@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
+import java.net.URL;
 import java.util.Hashtable;
 
 public class GUI extends JFrame {
@@ -22,6 +23,11 @@ public class GUI extends JFrame {
 
     this.setLayout(new BorderLayout());
     this.setTitle("BLAST GUI");
+    URL iconURL = getClass().getResource("/resources/dna.png");
+    ImageIcon icon = new ImageIcon(iconURL);
+    this.setIconImage(icon.getImage());
+
+
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // Results panel (right)
