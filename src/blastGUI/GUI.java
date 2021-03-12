@@ -2,21 +2,21 @@ package blastGUI;
 
 import blast.BlastController;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.util.Hashtable;
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class GUI extends JFrame {
   private final JTextField queryField;
-  private JTextField similarityText;
   private final JTextArea resultsArea;
   private final JRadioButton proteinRadio;
   private final JSlider similaritySlider;
-  private String databasePath, databaseIndexPath;
   private final JLabel dbIndexFileLabel;
   private final JLabel dbFileLabel;
+  private JTextField similarityText;
+  private String databasePath, databaseIndexPath;
 
   public GUI() {
 
@@ -86,8 +86,7 @@ public class GUI extends JFrame {
 
     JButton openDbFile = new JButton("Open a database file");
     sideMenu.add(openDbFile);
-    openDbFile.addActionListener(
-        e -> selectDatabase());
+    openDbFile.addActionListener(e -> selectDatabase());
 
     dbFileLabel = new JLabel("No database selected.");
     Font dbFileLabelFont = dbFileLabel.getFont();
@@ -96,8 +95,7 @@ public class GUI extends JFrame {
 
     JButton openDbIndFile = new JButton("Open a database indexes file");
     sideMenu.add(openDbIndFile);
-    openDbIndFile.addActionListener(
-        e -> selectDatabaseIndex());
+    openDbIndFile.addActionListener(e -> selectDatabaseIndex());
 
     dbIndexFileLabel = new JLabel("No database indexes selected.");
     Font dbIndexFileLabelFont = dbIndexFileLabel.getFont();
@@ -115,18 +113,24 @@ public class GUI extends JFrame {
 
     JButton blast = new JButton("BLAST");
     bottomPanel.add(blast);
-    blast.addActionListener(
-        e -> runQuery());
+    blast.addActionListener(e -> runQuery());
 
     JButton clearButton = new JButton("Clear results");
-    clearButton.addActionListener(
-        e -> resultsArea.setText(""));
+    clearButton.addActionListener(e -> resultsArea.setText(""));
     bottomPanel.add(clearButton);
 
     this.add(bottomPanel, BorderLayout.SOUTH);
 
     this.setVisible(true);
     this.pack();
+  }
+
+  public static void main(String[] args) {
+    EventQueue.invokeLater(
+        () -> {
+          @SuppressWarnings("unused")
+          GUI newWindow = new GUI();
+        });
   }
 
   public void selectDatabaseIndex() {
@@ -183,13 +187,5 @@ public class GUI extends JFrame {
     } catch (Exception exc) {
       System.out.println("Error en la llamada: " + exc.toString());
     }
-  }
-
-  public static void main(String[] args) {
-    EventQueue.invokeLater(
-            () -> {
-              @SuppressWarnings("unused")
-              GUI newWindow = new GUI();
-            });
   }
 }
