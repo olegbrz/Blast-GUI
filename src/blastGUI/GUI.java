@@ -140,13 +140,6 @@ public class GUI extends JFrame {
   }
 
   public static void main(String[] args) {
-    try {
-      JFrame.setDefaultLookAndFeelDecorated(true);
-      JDialog.setDefaultLookAndFeelDecorated(true);
-      UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
     EventQueue.invokeLater(
         () -> {
           @SuppressWarnings("unused")
