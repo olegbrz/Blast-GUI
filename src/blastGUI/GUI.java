@@ -3,7 +3,6 @@ package blastGUI;
 import blast.BlastController;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
@@ -16,6 +15,7 @@ public class GUI extends JFrame {
   private final JSlider similaritySlider;
   private final JLabel dbIndexFileLabel;
   private final JLabel dbFileLabel;
+  private final JLabel queryParams = new JLabel();
   private final JComboBox<String> queryComboBox;
   private JTextField similarityText;
   private String databasePath, databaseIndexPath;
@@ -27,7 +27,6 @@ public class GUI extends JFrame {
     URL iconURL = getClass().getResource("/resources/dna.png");
     ImageIcon icon = new ImageIcon(iconURL);
     this.setIconImage(icon.getImage());
-
 
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -89,6 +88,7 @@ public class GUI extends JFrame {
     sliderPan.add(similaritySlider);
 
     similarityText = new JTextField(4);
+    similarityText.setText("1.0");
     similarityText.addActionListener(
         e -> similaritySlider.setValue((int) (Float.parseFloat(similarityText.getText()) * 100)));
     sliderPan.add(similarityText);
@@ -100,7 +100,8 @@ public class GUI extends JFrame {
     sideMenu.add(filesLabel);
 
     JPanel dbFileWrapper = new JPanel(new BorderLayout());
-    JButton openDbFile = new JButton("Open a database file");
+    JButton openDbFile = new JButton("Open database file");
+    openDbFile.setIcon(UIManager.getIcon("FileView.directoryIcon"));
     dbFileWrapper.add(openDbFile, BorderLayout.PAGE_START);
     openDbFile.addActionListener(e -> selectDatabase());
 
@@ -111,10 +112,10 @@ public class GUI extends JFrame {
     sideMenu.add(dbFileWrapper);
 
     JPanel dbIndFileWrapper = new JPanel(new BorderLayout());
-    JButton openDbIndFile = new JButton("Open a database indexes file");
+    JButton openDbIndFile = new JButton("Open database indexes file");
+    openDbIndFile.setIcon(UIManager.getIcon("FileView.directoryIcon"));
     dbIndFileWrapper.add(openDbIndFile, BorderLayout.PAGE_START);
     openDbIndFile.addActionListener(e -> selectDatabaseIndex());
-
 
     dbIndexFileLabel = new JLabel("No database indexes selected.");
     Font dbIndexFileLabelFont = dbIndexFileLabel.getFont();
@@ -138,8 +139,15 @@ public class GUI extends JFrame {
 
     // Clear button
     JButton clearButton = new JButton("Clear results");
-    clearButton.addActionListener(e -> resultsArea.setText(""));
+    clearButton.addActionListener(
+        e -> {
+          resultsArea.setText("");
+          queryParams.setText("");
+        });
     bottomPanel.add(clearButton);
+
+    // Query parameters
+    bottomPanel.add(queryParams);
 
     this.add(bottomPanel, BorderLayout.SOUTH);
 
@@ -183,6 +191,7 @@ public class GUI extends JFrame {
     if (queryItem != null) query = queryItem.toString();
     char queryType = proteinRadio.isSelected() ? 'p' : 'q';
     float similarity = ((float) similaritySlider.getValue()) / 100;
+    System.out.println(similarity);
 
     String errorMessage = "";
     if (query.length() == 0) {
@@ -200,8 +209,6 @@ public class GUI extends JFrame {
       return;
     }
 
-    // System.out.println(query + " " + similarity + " " + queryType + " ");
-
     BlastController bCnt = new BlastController();
     try {
       String result =
@@ -209,6 +216,13 @@ public class GUI extends JFrame {
       resultsArea.setText("");
       resultsArea.append(result);
       queryComboBox.addItem(query);
+      queryParams.setText(
+          " Query seq: "
+              + query.substring(0, query.length() > 4 ? 4 : query.length())
+              + "...  | Query type: "
+              + queryType
+              + " | Similarity: "
+              + similarity);
 
     } catch (Exception exc) {
       System.out.println("Error en la llamada: " + exc.toString());
