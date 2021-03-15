@@ -34,6 +34,8 @@ public class GUI extends JFrame {
     resultsArea = new JTextArea(10, 60);
     resultsArea.setEditable(false);
     resultsArea.setLineWrap(true);
+    resultsArea.setBackground(Color.BLACK);
+    resultsArea.setForeground(Color.WHITE);
     JScrollPane resultsPanel = new JScrollPane(resultsArea);
 
     // Left side menu
@@ -213,7 +215,6 @@ public class GUI extends JFrame {
     try {
       String result =
           bCnt.blastQuery(queryType, databasePath, databaseIndexPath, similarity, query);
-      resultsArea.setText("");
       resultsArea.append(result);
       queryComboBox.addItem(query);
       queryParams.setText(
