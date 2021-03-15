@@ -6,6 +6,9 @@
 <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/olegbrz/Blast-GUI">
 <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/olegbrz/Blast-GUI">
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/olegbrz/Blast-GUI">
+<img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/olegbrz/Blast-GUI">
+<a href="https://github.com/olegbrz/Blast-GUI"><img alt="GitHub license" src="https://img.shields.io/github/license/olegbrz/Blast-GUI"></a>
+
 </p>
 
 ![screenshot](assets/screenshot.png)
