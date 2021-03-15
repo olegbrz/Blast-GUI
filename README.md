@@ -26,6 +26,15 @@ data base file.
 - The similarity percentage. A float value between 0.0 and 1.0.
 - The query sequence. A string that represents the protein or nucleotid sequence for which
 the matches are search. Every aminoacid or nucleotid is represented by an uppercase letter.
+  
+## Project structure
+
+The project is divided in 4 classes:
+
+- `GUI.class`: Contains the master `JFrame` window. In this class are defined the most important characteristics as layout, title, icon, etc. It also defines the bottom button bar with query button, clear button and query parameters label. It instantiates `ResultPanel` and `SidePanel` classes.
+- `Main.class`: Contains the main method that executes the program.
+- `ResultsPanel.class`: Contains a `JScrollPane` with `JTextArea` that displays query results.
+- `SidePanel.class`: Contains all side menu components as query sequence input, query type (nucleotide or protein), similarity slider with value text field and two buttons that open explorer to choose files.
 
 ## Problems
 
