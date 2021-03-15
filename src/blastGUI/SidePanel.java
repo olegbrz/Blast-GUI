@@ -12,8 +12,8 @@ public class SidePanel extends JPanel {
   private final JRadioButton proteinRadio, nucleotideRadio;
   private final JSlider similaritySlider;
   private final JTextField similaritySliderValue;
-  private final JLabel selectedDbFileLabel;
-  private final JLabel selectedDbIndexFileLabel;
+  private final JTextField selectedDbFileField;
+  private final JTextField selectedDbIndexFileField;
   private String databasePath, databaseIndexPath;
 
   public SidePanel() {
@@ -63,9 +63,12 @@ public class SidePanel extends JPanel {
     sliderWrapper.add(similaritySlider);
     similaritySliderValue.setText("1.0");
     similaritySliderValue.addActionListener(
-        e ->
+        e -> {
+          if (similaritySliderValue.getText().length() != 0) {
             similaritySlider.setValue(
-                (int) (Float.parseFloat(similaritySliderValue.getText()) * 100)));
+                (int) (Float.parseFloat(similaritySliderValue.getText()) * 100));
+          }
+        });
     sliderWrapper.add(similaritySliderValue);
     this.add(sliderWrapper);
 
@@ -76,27 +79,23 @@ public class SidePanel extends JPanel {
     JPanel dbOpenWrapper = new JPanel(new BorderLayout());
     JButton openDatabaseButton = new JButton("Open database");
     openDatabaseButton.setIcon(UIManager.getIcon("FileView.directoryIcon"));
+    openDatabaseButton.setHorizontalAlignment(SwingConstants.LEFT);
     dbOpenWrapper.add(openDatabaseButton, BorderLayout.PAGE_START);
     openDatabaseButton.addActionListener(e -> openFile(FileClass.DATABASE));
 
-    selectedDbFileLabel = new JLabel("No database selected.");
-    Font dbFileLabelFont = selectedDbFileLabel.getFont();
-    selectedDbFileLabel.setFont(
-        dbFileLabelFont.deriveFont(dbFileLabelFont.getStyle() & ~Font.BOLD));
-    dbOpenWrapper.add(selectedDbFileLabel, BorderLayout.CENTER);
+    selectedDbFileField = new JTextField();
+    dbOpenWrapper.add(selectedDbFileField, BorderLayout.CENTER);
     this.add(dbOpenWrapper);
 
     JPanel dbIndexOpenWrapper = new JPanel(new BorderLayout());
     JButton openDatabaseIndexButton = new JButton("Open database indexes");
+    openDatabaseIndexButton.setHorizontalAlignment(SwingConstants.LEFT);
     openDatabaseIndexButton.setIcon(UIManager.getIcon("FileView.directoryIcon"));
     dbIndexOpenWrapper.add(openDatabaseIndexButton, BorderLayout.PAGE_START);
     openDatabaseIndexButton.addActionListener(e -> openFile(FileClass.DATABASE_INDEX));
 
-    selectedDbIndexFileLabel = new JLabel("No database indexes selected.");
-    Font dbIndexFileLabelFont = selectedDbIndexFileLabel.getFont();
-    selectedDbIndexFileLabel.setFont(
-        dbIndexFileLabelFont.deriveFont(dbIndexFileLabelFont.getStyle() & ~Font.BOLD));
-    dbIndexOpenWrapper.add(selectedDbIndexFileLabel, BorderLayout.CENTER);
+    selectedDbIndexFileField = new JTextField();
+    dbIndexOpenWrapper.add(selectedDbIndexFileField, BorderLayout.CENTER);
     this.add(dbIndexOpenWrapper);
   }
 
@@ -119,10 +118,10 @@ public class SidePanel extends JPanel {
       File f = chooser.getSelectedFile();
       if (ft == FileClass.DATABASE_INDEX) {
         databaseIndexPath = f.getAbsolutePath();
-        selectedDbIndexFileLabel.setText(f.getAbsoluteFile().getName() + " selected");
+        selectedDbIndexFileField.setText(f.getAbsoluteFile().getName());
       } else if (ft == FileClass.DATABASE) {
         databasePath = f.getAbsolutePath();
-        selectedDbFileLabel.setText(f.getAbsoluteFile().getName() + " selected");
+        selectedDbFileField.setText(f.getAbsoluteFile().getName());
       }
     }
   }
