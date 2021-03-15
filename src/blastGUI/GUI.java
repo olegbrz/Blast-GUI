@@ -3,6 +3,7 @@ package blastGUI;
 import blast.BlastController;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
@@ -46,7 +47,9 @@ public class GUI extends JFrame {
 
     queryComboBox = new JComboBox<>();
     queryComboBox.setEditable(true);
-    sideMenu.add(queryComboBox);
+    JPanel comboWrapper = new JPanel(new BorderLayout());
+    comboWrapper.add(queryComboBox, BorderLayout.PAGE_START);
+    sideMenu.add(comboWrapper);
 
     // Query type
     JLabel queryTypeLabel = new JLabel("Query type");
@@ -96,24 +99,29 @@ public class GUI extends JFrame {
     JLabel filesLabel = new JLabel("Database files");
     sideMenu.add(filesLabel);
 
+    JPanel dbFileWrapper = new JPanel(new BorderLayout());
     JButton openDbFile = new JButton("Open a database file");
-    sideMenu.add(openDbFile);
+    dbFileWrapper.add(openDbFile, BorderLayout.PAGE_START);
     openDbFile.addActionListener(e -> selectDatabase());
 
     dbFileLabel = new JLabel("No database selected.");
     Font dbFileLabelFont = dbFileLabel.getFont();
     dbFileLabel.setFont(dbFileLabelFont.deriveFont(dbFileLabelFont.getStyle() & ~Font.BOLD));
-    sideMenu.add(dbFileLabel);
+    dbFileWrapper.add(dbFileLabel, BorderLayout.CENTER);
+    sideMenu.add(dbFileWrapper);
 
+    JPanel dbIndFileWrapper = new JPanel(new BorderLayout());
     JButton openDbIndFile = new JButton("Open a database indexes file");
-    sideMenu.add(openDbIndFile);
+    dbIndFileWrapper.add(openDbIndFile, BorderLayout.PAGE_START);
     openDbIndFile.addActionListener(e -> selectDatabaseIndex());
+
 
     dbIndexFileLabel = new JLabel("No database indexes selected.");
     Font dbIndexFileLabelFont = dbIndexFileLabel.getFont();
     dbIndexFileLabel.setFont(
         dbIndexFileLabelFont.deriveFont(dbIndexFileLabelFont.getStyle() & ~Font.BOLD));
-    sideMenu.add(dbIndexFileLabel);
+    dbIndFileWrapper.add(dbIndexFileLabel, BorderLayout.CENTER);
+    sideMenu.add(dbIndFileWrapper);
 
     // Window split pane
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sideMenu, resultsPanel);
