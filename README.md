@@ -1,6 +1,6 @@
 # Blast GUI
 
-<p align="center"><img src="./assets/dna.png" alt="Blast GUI logo" style="width:100px"></p>
+<p align="center"><img width="100" src="./assets/dna.png" alt="Blast GUI logo"></p>
 
 <p align="center">
 <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/olegbrz/Blast-GUI">
