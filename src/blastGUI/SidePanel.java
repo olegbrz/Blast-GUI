@@ -37,6 +37,12 @@ public class SidePanel extends JPanel {
     proteinRadio = new JRadioButton("Protein");
     proteinRadio.setSelected(true);
     nucleotideRadio = new JRadioButton("Nucleotide");
+    nucleotideRadio.addActionListener(
+        e -> {
+          JOptionPane.showMessageDialog(
+              this, "Nucleotide query not implemented yet", "Error", JOptionPane.ERROR_MESSAGE);
+          proteinRadio.setSelected(true);
+        });
     group.add(proteinRadio);
     group.add(nucleotideRadio);
     this.add(proteinRadio);
