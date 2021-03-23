@@ -7,9 +7,9 @@ import java.awt.*;
 import java.net.URL;
 
 public class GUI extends JFrame {
-  private final ResultsPanel resultsPanel = new ResultsPanel();
-  private final JLabel queryParams = new JLabel();
-  private final SidePanel sidePanel = new SidePanel();
+  private final ResultsPanel resultsPanel;
+  private final JLabel queryParams;
+  private final SidePanel sidePanel;
 
   public GUI() {
 
@@ -19,7 +19,10 @@ public class GUI extends JFrame {
     URL iconURL = getClass().getResource("/resources/dna.png");
     ImageIcon icon = new ImageIcon(iconURL);
     this.setIconImage(icon.getImage());
-    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    // Panels instances
+    resultsPanel = new ResultsPanel();
+    sidePanel = new SidePanel();
 
     // Window split pane
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidePanel, resultsPanel);
@@ -29,6 +32,7 @@ public class GUI extends JFrame {
 
     // Bottom panel
     JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    queryParams = new JLabel();
 
     // Blast button
     JButton blastButton = new JButton("BLAST");
